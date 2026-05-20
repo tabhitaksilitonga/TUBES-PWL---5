@@ -5,25 +5,6 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
-function toggleDarkMode() {
-    if (
-        localStorage.theme === 'dark' ||
-        (
-            !('theme' in localStorage) &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches
-        )
-    ) {
-        localStorage.theme = 'light';
-        document.documentElement.classList.remove('dark');
-    } else {
-        localStorage.theme = 'dark';
-        document.documentElement.classList.add('dark');
-    }
-}
-
-window.toggleDarkMode = toggleDarkMode;
-
-
 window.likeShotModal = async function (shotId, button) {
 
     try {
@@ -42,60 +23,82 @@ window.likeShotModal = async function (shotId, button) {
 
         const data = await response.json();
 
-        // SEMUA ICON LIKE
-        const allLikeIcons = document.querySelectorAll(`
-            [data-shot-id="${shotId}"] svg
-        `);
+        document.querySelectorAll(
+            `[data-shot-id="${shotId}"]`
+        ).forEach(el => {
 
-        allLikeIcons.forEach(svg => {
+            const svg = el.querySelector('svg');
+
+            if (!svg) return;
 
             if (data.liked) {
 
-                svg.setAttribute('fill', 'currentColor');
+                svg.setAttribute(
+                    'fill',
+                    'currentColor'
+                );
 
-                svg.classList.remove('text-gray-600');
-                svg.classList.add('text-pink-500');
+                svg.classList.remove(
+                    'text-gray-500'
+                );
+
+                svg.classList.add(
+                    'text-pink-500'
+                );
 
             } else {
 
-                svg.setAttribute('fill', 'none');
+                svg.setAttribute(
+                    'fill',
+                    'none'
+                );
 
-                svg.classList.remove('text-pink-500');
-                svg.classList.add('text-gray-600');
+                svg.classList.remove(
+                    'text-pink-500'
+                );
+
+                svg.classList.add(
+                    'text-gray-500'
+                );
             }
         });
 
-        // UPDATE SEMUA JUMLAH LIKE
         document.querySelectorAll(
             `#like-count-${shotId}`
         ).forEach(el => {
 
-            el.textContent = data.likes;
+            el.textContent = data.likes_count;
         });
 
     } catch (e) {
 
-        console.error('LIKE ERROR:', e);
-
+        console.error(e);
     }
 }
 
-
-window.saveShotModal = async function (shotId, button) {
+window.saveShotModal = async function (
+    shotId,
+    button
+) {
 
     try {
 
-        const response = await fetch(`/shots/${shotId}/save`, {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'X-CSRF-TOKEN': document
-                    .querySelector('meta[name="csrf-token"]')
-                    .content,
+        const response = await fetch(
+            `/shots/${shotId}/save`,
+            {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRF-TOKEN': document
+                        .querySelector(
+                            'meta[name="csrf-token"]'
+                        )
+                        .content,
 
-                'Accept': 'application/json'
+                    'Accept': 'application/json'
+                }
             }
-        });
+        );
 
         const data = await response.json();
 
@@ -103,41 +106,64 @@ window.saveShotModal = async function (shotId, button) {
 
         if (data.saved) {
 
-            svg.setAttribute('fill', 'currentColor');
+            svg.setAttribute(
+                'fill',
+                'currentColor'
+            );
 
-            svg.classList.remove('text-gray-600');
-            svg.classList.add('text-black');
+            svg.classList.remove(
+                'text-gray-600'
+            );
+
+            svg.classList.add(
+                'text-black'
+            );
 
         } else {
 
-            svg.setAttribute('fill', 'none');
+            svg.setAttribute(
+                'fill',
+                'none'
+            );
 
-            svg.classList.remove('text-black');
-            svg.classList.add('text-gray-600');
+            svg.classList.remove(
+                'text-black'
+            );
+
+            svg.classList.add(
+                'text-gray-600'
+            );
         }
 
     } catch (e) {
 
-        console.error('SAVE ERROR:', e);
-
+        console.error(e);
     }
 }
 
-window.followUser = async function (userId, button) {
+window.followUser = async function (
+    userId,
+    button
+) {
 
     try {
 
-        const response = await fetch(`/users/${userId}/follow`, {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'X-CSRF-TOKEN': document
-                    .querySelector('meta[name="csrf-token"]')
-                    .content,
+        const response = await fetch(
+            `/users/${userId}/follow`,
+            {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRF-TOKEN': document
+                        .querySelector(
+                            'meta[name="csrf-token"]'
+                        )
+                        .content,
 
-                'Accept': 'application/json'
+                    'Accept': 'application/json'
+                }
             }
-        });
+        );
 
         const data = await response.json();
 
@@ -145,20 +171,29 @@ window.followUser = async function (userId, button) {
 
             button.innerText = 'Following';
 
-            button.classList.remove('text-gray-500');
-            button.classList.add('text-pink-500');
+            button.classList.remove(
+                'text-gray-500'
+            );
+
+            button.classList.add(
+                'text-pink-500'
+            );
 
         } else {
 
             button.innerText = 'Follow';
 
-            button.classList.remove('text-pink-500');
-            button.classList.add('text-gray-500');
+            button.classList.remove(
+                'text-pink-500'
+            );
+
+            button.classList.add(
+                'text-gray-500'
+            );
         }
 
     } catch (e) {
 
-        console.error('FOLLOW ERROR:', e);
-
+        console.error(e);
     }
 }
