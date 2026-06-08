@@ -24,6 +24,8 @@ use App\Imports\CollectionItemsImport;
 use App\Imports\JobsImport;
 use App\Imports\ApplicationsImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\PostController;
+use App\Models\Job;
 
 Route::get('/', [ShotController::class, 'home'])->name('home');
 
@@ -71,29 +73,125 @@ Route::get('/shots/{id}/modal', [ShotController::class, 'modal'])->name('shots.m
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');
 
+Route::get('/talent', [UserController::class, 'talent'])
+    ->name('talent.index');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/collections/{collection}', function (\App\Models\Collection $collection) {
+
+    $collection->load([
+        'shots.user',
+        'shots.categories'
+    ]);
+
+    return view('collections.show', compact('collection'));
+
+})->middleware('auth')->name('collections.show');
+
+Route::get('/jobs/{id}', function ($id) {
+    $job = Job::findOrFail($id); 
+    return view('jobs.show', compact('job'));
+})->name('jobs.show');
     
     Route::post('/shots/{id}/save', [ShotController::class, 'save'])
-    ->middleware('auth');
+    ->middleware('auth')
+    ->name('shots.save');
     Route::post('/users/{id}/follow', [UserController::class, 'follow'])
     ->middleware('auth');
     Route::post('/shots/{id}/like', [ShotController::class, 'like'])
     ->middleware('auth');
+
+    Route::post('/shots/{id}/comments', [ShotController::class, 'comment'])
+    ->middleware('auth')
+    ->name('shots.comment');
     
     Route::get('/profile/{username}/{tab?}', function ($username, $tab = 'work') {
-        $user = \App\Models\User::where('username', $username)->firstOrFail();
-        $shots = \App\Models\Shot::where('user_id', $user->id)->get();
-        $collections = [];
-        
-        if ($tab === 'collections') {
-            $collections = \App\Models\Collection::where('user_id', $user->id)->get();
-        }
-        
-        return view('profile', compact('user', 'shots', 'collections', 'tab'));
-    })->name('user.profile');
+
+    $user = \App\Models\User::where(
+        'username',
+        $username
+    )->firstOrFail();
+
+    $collections = collect();
+    $members = collect();
+
+    if ($tab === 'liked') {
+
+    $likedIds = $user->likedShots()
+        ->pluck('shots.id');
+
+    $bestShotIds = \App\Models\Shot::withCount('likes')
+        ->whereIn('id', $likedIds)
+        ->orderByDesc('likes_count')
+        ->get()
+        ->groupBy('user_id')
+        ->map(function ($shots) {
+            return $shots->first()->id;
+        });
+
+    $shots = \App\Models\Shot::with([
+            'user',
+            'categories'
+        ])
+        ->withCount('likes')
+        ->whereIn('id', $bestShotIds)
+        ->inRandomOrder()
+        ->get();
+
+} elseif ($tab === 'following') {
+
+    $shots = collect();
+
+    $members = $user->following()
+        ->withCount(['followers', 'following', 'shots'])
+        ->get();
+
+} elseif ($tab === 'followers') {
+
+    $shots = collect();
+
+    $members = $user->followers()
+        ->withCount(['followers', 'following', 'shots'])
+        ->get();
+
+} else {
+
+    $shots = \App\Models\Shot::where(
+            'user_id',
+            $user->id
+        )
+        ->with(['user', 'categories'])
+        ->withCount('likes')
+        ->latest()
+        ->get();
+}
+
+    if ($tab === 'collections') {
+
+        $collections = \App\Models\Collection::where(
+                'user_id',
+                $user->id
+            )
+            ->with('shots')
+            ->get();
+    }
+
+    return view(
+    'profile',
+    compact(
+        'user',
+        'shots',
+        'collections',
+        'members',
+        'tab'
+    )
+);
+
+})->name('user.profile');
 
     Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
     Route::post('/jobs', [JobController::class, 'store'])->name('jobs.store');
@@ -175,27 +273,59 @@ Route::get('/import-applications', function () {
     return 'Applications Imported Successfully';
 });
 
-Route::get('/dashboard', function () {
-    $bestShotIds = \App\Models\Shot::withCount('likes')
-        ->orderByDesc('likes_count')
-        ->get()
-        ->groupBy('user_id')
-        ->map(function ($shots) {
-            return $shots->first()->id;
-        });
+Route::get('/jobs/{id}', function ($id) {
+    $job = Job::with('poster')  
+              ->findOrFail($id);
+    
+    return view('jobs.show', compact('job'));
+})->name('jobs.show');
 
-    $shots = \App\Models\Shot::with(['user', 'categories'])
-    ->withCount('likes')
-    ->whereIn('id', $bestShotIds)
-    ->inRandomOrder()
-    ->paginate(12);
+Route::get('/dashboard/{filter?}', function ($filter = 'popular') {
 
     $categories = \App\Models\Category::orderBy('id')->get();
 
-    return view('dashboard', compact('shots', 'categories'));
-})->middleware(['auth'])->name('dashboard');
+    if ($filter === 'following') {
 
-use App\Http\Controllers\PostController;
+        $followingIds = auth()->user()
+            ->following()
+            ->pluck('users.id');
+
+        $shots = \App\Models\Shot::with(['user', 'categories'])
+            ->withCount('likes')
+            ->whereIn('user_id', $followingIds)
+            ->latest()
+            ->get();
+
+        $filterLabel = 'Following';
+
+    } elseif ($filter === 'new') {
+
+        $shots = \App\Models\Shot::with(['user', 'categories'])
+            ->withCount('likes')
+            ->latest()
+            ->get();
+
+        $filterLabel = 'New & Noteworthy';
+
+    } else {
+
+        $shots = \App\Models\Shot::with(['user', 'categories'])
+            ->withCount('likes')
+            ->orderByDesc('likes_count')
+            ->get();
+
+        $filter = 'popular';
+        $filterLabel = 'Popular';
+    }
+
+    return view('dashboard', compact(
+        'shots',
+        'categories',
+        'filter',
+        'filterLabel'
+    ));
+
+})->middleware(['auth'])->name('dashboard');
 
 Route::get('/posts/create', [PostController::class, 'create'])
     ->name('posts.create');
@@ -205,4 +335,14 @@ Route::get('/posts/create', [PostController::class, 'create'])
     Route::get('/shots/{shot}', [ShotController::class, 'show'])
     ->name('shots.show');
    
+    Route::delete(
+    '/shots/{id}',
+    [ShotController::class, 'destroy']
+    
+)->name('shots.destroy');
+
+Route::get('/shots/{id}', [ShotController::class, 'show'])
+    ->name('shots.show');
+
+
 require __DIR__.'/auth.php';

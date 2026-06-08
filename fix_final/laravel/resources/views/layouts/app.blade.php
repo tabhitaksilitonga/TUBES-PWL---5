@@ -94,7 +94,152 @@
 
     </div>
 
-    <x-footer />
+        <x-footer />
+
+    <script>
+    async function likeShotModal(shotId, button) {
+        try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        const response = await fetch(`/shots/${shotId}/like`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.status === 401 || response.redirected) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const data = await response.json();
+
+        const svg = button.querySelector('.modal-like-svg');
+        const modalBottomIcon = document.querySelector(`#modal-bottom-like-icon-${shotId}`);
+
+        if (data.liked) {
+            button.classList.remove('text-gray-600');
+            button.classList.add('text-[#ea4c89]');
+
+            if (svg) {
+                svg.setAttribute('fill', 'currentColor');
+                svg.classList.remove('text-gray-600');
+                svg.classList.add('text-[#ea4c89]');
+            }
+
+            if (modalBottomIcon) {
+                modalBottomIcon.setAttribute('fill', 'currentColor');
+                modalBottomIcon.classList.remove('text-gray-500');
+                modalBottomIcon.classList.add('text-[#ea4c89]');
+            }
+        } else {
+            button.classList.remove('text-[#ea4c89]');
+            button.classList.add('text-gray-600');
+
+            if (svg) {
+                svg.setAttribute('fill', 'none');
+                svg.classList.remove('text-[#ea4c89]');
+                svg.classList.add('text-gray-600');
+            }
+
+            if (modalBottomIcon) {
+                modalBottomIcon.setAttribute('fill', 'none');
+                modalBottomIcon.classList.remove('text-[#ea4c89]');
+                modalBottomIcon.classList.add('text-gray-500');
+            }
+        }
+
+        document
+            .querySelectorAll(`.like-count[data-shot-id="${shotId}"]`)
+            .forEach((el) => {
+                el.textContent = data.likes_count;
+            });
+
+    } catch (error) {
+        console.error('Like modal error:', error);
+    }
+}
+    </script>
+
+<script>
+    window.openGetInTouchModal = function (shotId) {
+        const modal = document.getElementById('get-in-touch-modal-' + shotId);
+
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        } else {
+            console.error('Get in touch modal not found:', shotId);
+        }
+    };
+
+    window.closeGetInTouchModal = function (shotId) {
+        const modal = document.getElementById('get-in-touch-modal-' + shotId);
+
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    };
+
+    window.sendGetInTouchMessage = function (event, shotId, form) {
+        event.preventDefault();
+
+        const designerEmail = form.dataset.designerEmail;
+        const designerUsername = form.dataset.designerUsername || 'Designer';
+        const shotTitle = form.dataset.shotTitle || 'Project';
+
+        const message = form.querySelector('[name="message"]').value.trim();
+        const targetDate = form.querySelector('[name="target_date"]').value;
+        const budget = form.querySelector('[name="budget"]').value;
+        const recommendBudget = form.querySelector('[name="recommend_budget"]').checked;
+
+        if (!designerEmail) {
+            alert('Email designer belum tersedia.');
+            return;
+        }
+
+        if (message.length < 50) {
+            alert('Project details minimal 50 karakter.');
+            return;
+        }
+
+        const subject = `Project inquiry for ${shotTitle}`;
+
+        const body = `
+Hi ${designerUsername},
+
+I'm interested in working with you.
+
+Project:
+${shotTitle}
+
+Project Details:
+${message}
+
+Target Date:
+${targetDate}
+
+Project Budget:
+${recommendBudget ? 'Please recommend a budget' : 'Rp ' + budget}
+
+Thank you.
+        `.trim();
+
+        const mailtoUrl =
+            `mailto:${designerEmail}` +
+            `?subject=${encodeURIComponent(subject)}` +
+            `&body=${encodeURIComponent(body)}`;
+
+        window.location.href = mailtoUrl;
+
+        form.reset();
+
+        window.closeGetInTouchModal(shotId);
+    };
+</script>
 
 </body>
 </html>

@@ -7,29 +7,41 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function follow($id)
+    public function talent()
     {
-        $userToFollow = User::findOrFail($id);
-        $user = auth()->user();
+        $designers = User::where('role', 'designer')
+            ->withCount('shots')
+            ->latest()
+            ->paginate(12);
 
-        if ($user->id ==    $userToFollow->id) {
-            return response()->json([
-                'error' => 'Tidak bisa  follow diri sendiri'
-            ], 400);
-        }
-
-        $alreadyFollowed = $user->following()
-            ->where('following_id', $id)
-            ->exists();
-
-        if ($alreadyFollowed) {
-            $user->following()->detach($id);
-        } else {
-            $user->following()->attach($id);
-        }
-
-        return response()->json([
-            'following' => !$alreadyFollowed
-        ]);
+        return view('talent.index', compact('designers'));
     }
+    
+    public function follow($id)
+{
+    $targetUser = User::findOrFail($id);
+
+    if (auth()->id() === $targetUser->id) {
+        return response()->json([
+            'message' => 'Tidak bisa follow diri sendiri.'
+        ], 403);
+    }
+
+    $alreadyFollowing = auth()->user()
+        ->following()
+        ->where('following_id', $targetUser->id)
+        ->exists();
+
+    if ($alreadyFollowing) {
+        auth()->user()->following()->detach($targetUser->id);
+    } else {
+        auth()->user()->following()->attach($targetUser->id);
+    }
+
+    return response()->json([
+        'following' => !$alreadyFollowing,
+        'followers_count' => $targetUser->followers()->count(),
+        'following_count' => auth()->user()->following()->count(),
+    ]);
+}
 }
