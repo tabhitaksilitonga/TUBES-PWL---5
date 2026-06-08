@@ -9,19 +9,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jobs', function (Blueprint $table) {
-            $table->id();
-            
+            $table->id(); 
             $table->foreignId('poster_id')
+                ->nullable()
                 ->constrained('users')
                 ->onDelete('cascade');
             
-            $table->string('title');
-            $table->string('company_name');
-            $table->string('location')->nullable(); // ✅ nullable sesuai ERD
-            $table->enum('job_type', ['full-time', 'part-time', 'freelance', 'contract']); // ✅ enum
-            $table->text('description');
-            $table->string('apply_url')->nullable(); // ✅ nullable
-            $table->timestamps(); // created_at & updated_at
+            $table->string('title'); 
+            $table->string('company_name')->nullable(); 
+            $table->string('location')->nullable();
+            $table->string('job_type');
+            $table->text('description'); 
+            $table->longText('description_html')->nullable(); 
+            $table->string('apply_url')->nullable(); 
+            $table->timestamps(); 
+            $table->text('company_logo')->nullable(); 
+            $table->string('website')->nullable();
         });
     }
 
