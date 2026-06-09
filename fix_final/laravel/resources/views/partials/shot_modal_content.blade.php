@@ -4,7 +4,7 @@
         <div class="flex items-center gap-4">
             <a href="{{ route('user.profile', ['username' => $shot->user->username ?? '']) }}" class="block">
                 <div class="relative">
-                    <img src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name=User' }}"
+                    <img src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($shot->user->full_name ?? $shot->user->username ?? 'User') }}"
                         alt="{{ $shot->user->username ?? 'User' }}"
                         class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
                 </div>
@@ -155,7 +155,7 @@
 
                 <div class="flex gap-3">
                     <img
-                        src="{{ $comment->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($comment->user->username ?? 'U') }}"
+                        src="{{ $comment->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($comment->user->full_name ?? $comment->user->username ?? 'U') }}"
                         class="w-10 h-10 rounded-full object-cover">
 
                     <div>
@@ -197,7 +197,7 @@
                 class="mt-6 flex gap-3"
                 onsubmit="commentShotModal(event, {{ $shot->id }}, this)">
                 <img
-                    src="{{ auth()->user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->username ?? 'U') }}"
+                    src="{{ auth()->user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->full_name ?? auth()->user()->username ?? 'U') }}"
                     class="w-10 h-10 rounded-full object-cover">
 
                 <div class="flex-1">
@@ -268,7 +268,7 @@
 
         <div class="flex items-center gap-4 mb-6">
             <img
-                src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($shot->user->username ?? 'U') }}"
+                src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($shot->user->full_name ?? $shot->user->username ?? 'U') }}"
                 class="w-14 h-14 rounded-full object-cover border border-gray-200">
 
             <div>

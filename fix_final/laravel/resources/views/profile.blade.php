@@ -66,9 +66,16 @@
             <div class="flex flex-col items-center text-center mb-16">
                 <div class="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-3xl font-bold text-gray-500 dark:text-gray-400 mb-4 overflow-hidden border-2 border-gray-100 dark:border-gray-800">
                     @if($user->avatar_url)
-                    <img src="{{ $user->avatar_url }}" class="w-full h-full object-cover">
+                        <img src="{{ $user->avatar_url }}" class="w-full h-full object-cover">
                     @else
-                    {{ strtoupper(substr($user->full_name, 0, 2)) }}
+                        @php
+                            $words = explode(' ', $user->full_name);
+                            $initials = strtoupper(substr($words[0], 0, 1));
+                            if (isset($words[1])) {
+                                $initials .= strtoupper(substr($words[1], 0, 1));
+                            }
+                        @endphp
+                        {{ $initials }}
                     @endif
                 </div>
 
@@ -456,7 +463,9 @@
             </div>
         </div>
 
-    </div> <script>
+    </div>
+
+    <script>
         function prepareReply(username, shotId) {
             setTimeout(() => {
                 const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
