@@ -87,7 +87,7 @@
 
             <!-- TITLE -->
             <h1 class="text-center text-[42px] font-bold text-gray-900 dark:text-white mb-3 leading-tight sm:text-[34px]">
-                Welcome to Dribbble
+                Welcome to Trrrible
             </h1>
 
             <!-- SUBTITLE -->
