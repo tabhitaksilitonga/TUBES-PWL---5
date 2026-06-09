@@ -34,10 +34,6 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * RELATIONS
-     */
-
     public function shots()
     {
         return $this->hasMany(Shot::class);
@@ -96,5 +92,13 @@ class User extends Authenticatable
     public function applications()
     {
         return $this->hasMany(Application::class, 'applicant_id');
+    }
+
+    public function isFollowing($user)
+    {
+        if (!$user) {
+            return false;
+        }
+        return $this->following()->where('following_id', $user->id)->exists();
     }
 }
