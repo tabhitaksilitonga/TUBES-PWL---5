@@ -58,7 +58,7 @@
             href="{{ route('home') }}"
             class="absolute top-[30px] left-[40px] text-[28px] italic font-bold text-gray-900 dark:text-white no-underline transition duration-300 hover:text-[#d89ae4]"
         >
-            Dribbble
+            Trrrible
         </a>
 
         <!-- FORM WRAPPER -->
