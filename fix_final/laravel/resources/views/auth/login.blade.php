@@ -58,7 +58,7 @@
             href="{{ route('home') }}"
             class="absolute top-[30px] left-[40px] text-[28px] italic font-bold text-gray-900 dark:text-white no-underline transition duration-300 hover:text-[#d89ae4]"
         >
-            Dribbble
+            Trrrible
         </a>
 
         <!-- FORM WRAPPER -->
@@ -79,7 +79,7 @@
 
             <!-- TITLE -->
             <h1 class="text-center text-[42px] font-bold text-gray-900 dark:text-white mb-3 leading-tight sm:text-[34px]">
-                Sign in to Dribbble
+                Sign in to Trrrible
             </h1>
 
             <!-- SUBTITLE -->

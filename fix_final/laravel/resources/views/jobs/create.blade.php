@@ -62,7 +62,7 @@
             <input type="url" name="apply_url" value="{{ old('apply_url') }}"
                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5" 
                    placeholder="https://your-company.com/careers/apply">
-            <p class="text-xs text-gray-500 mt-1">If provided, applicants will be redirected here instead of applying on Dribbble</p>
+            <p class="text-xs text-gray-500 mt-1">If provided, applicants will be redirected here instead of applying on Trrrible</p>
             @error('apply_url') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
         

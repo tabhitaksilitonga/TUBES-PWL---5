@@ -15,7 +15,7 @@
             <a
                 href="{{ route('home') }}"
                 class="text-2xl font-black tracking-tighter text-[#0d0c22] hover:text-[#ea4c89] transition-colors">
-                dribbble
+                Trrrible
             </a>
         </div>
 
