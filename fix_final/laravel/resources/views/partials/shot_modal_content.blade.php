@@ -76,7 +76,19 @@
                 Get in touch
             </a>
             @endauth
-
+            
+             {{-- Tombol Delete Khusus Pemilik Shots --}}
+            @auth
+                @if(auth()->id() === $shot->user_id)
+                    <form action="{{ route('shots.destroy', $shot->id) }}" method="POST" onsubmit="return confirm('Apakah kamu yakin ingin menghapus postingan ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-red-600 transition text-sm shadow-md">
+                            Delete
+                        </button>
+                    </form>
+                @endif
+            @endauth
             <button @click="closeModal()" class="ml-2 w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition">
                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
