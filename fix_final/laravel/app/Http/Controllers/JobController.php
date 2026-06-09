@@ -74,7 +74,7 @@ class JobController extends Controller
             'location' => 'nullable|string|max:255',
             'job_type' => 'required|in:full-time,part-time,freelance,contract',
             'description' => 'required|string',
-            'apply_url' => 'nullable|url',
+            'apply_url' => 'required|url',
             'website' => 'nullable|url',
             'company_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'specialties' => 'nullable|array',

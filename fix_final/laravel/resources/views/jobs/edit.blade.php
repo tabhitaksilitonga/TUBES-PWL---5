@@ -29,7 +29,7 @@
 
     <form action="{{ route('jobs.update', $job) }}" method="POST" class="bg-white rounded-xl shadow p-8">
         @csrf
-        @method('PUT')  <!-- ✅ PENTING: Method spoofing untuk UPDATE -->
+        @method('PUT')  
         
         <!-- Job Title -->
         <div class="mb-6">
@@ -98,19 +98,12 @@
         <!-- Action Buttons -->
         <div class="flex flex-wrap gap-4">
             <button type="submit" class="bg-[#ea4c89] hover:bg-[#c73e72] text-white px-8 py-3 rounded-lg font-medium transition">
-                💾 Save Changes
+                 Save Changes
             </button>
             <a href="{{ route('jobs.show', $job) }}" class="px-8 py-3 text-gray-600 hover:text-[#0d0c22] font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition">
                 Cancel
             </a>
             
-            <!-- Delete Button (separate, with confirmation) -->
-            <form action="{{ route('jobs.destroy', $job) }}" method="POST" class="ml-auto" onsubmit="return confirm('⚠️ Are you sure you want to delete this job? This action cannot be undone.')">
-                @csrf @method('DELETE')
-                <button type="submit" class="text-red-500 hover:text-red-700 font-medium text-sm">
-                    🗑️ Delete Job
-                </button>
-            </form>
         </div>
     </form>
     

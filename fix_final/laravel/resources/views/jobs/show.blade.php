@@ -203,13 +203,6 @@
                                     </a>
                                 @endif
 
-                                @if(Route::has('jobs.applications'))
-                                    <a href="{{ route('jobs.applications', $job) }}"
-                                       class="w-full h-12 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium flex items-center justify-center transition">
-                                        View {{ $job->applications_count }} Applications
-                                    </a>
-                                @endif
-
                                 @if(Route::has('jobs.destroy'))
                                     <form action="{{ route('jobs.destroy', $job) }}"
                                           method="POST"
