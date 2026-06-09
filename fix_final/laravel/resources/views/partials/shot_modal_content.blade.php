@@ -292,10 +292,14 @@
 
         <div id="message-content-{{ $shot->id }}">
             <form
+                id="form-get-in-touch-{{ $shot->id }}"
+                action="{{ route('project.inquiry.store', $shot->id) }}"
+                method="POST"
                 onsubmit="sendGetInTouchMessage(event, {{ $shot->id }}, this)"
                 data-designer-email="{{ $shot->user->email }}"
                 data-designer-username="{{ $shot->user->username }}"
                 data-shot-title="{{ $shot->title }}">
+                @csrf
 
                 <div class="mb-5">
                     <label class="flex items-center justify-between text-sm font-semibold text-[#0d0c22] mb-2">
@@ -358,7 +362,8 @@
                 </div>
 
                 <button
-                    type="submit"
+                    type="button"
+                    onclick="sendGetInTouchMessage(event, {{ $shot->id }}, document.getElementById('form-get-in-touch-{{ $shot->id }}'))"
                     class="w-full h-12 rounded-full bg-[#ea4c89] hover:bg-[#c73e72] text-white font-bold transition">
                     Send Message
                 </button>
@@ -372,13 +377,87 @@
 </div>
 @endauth
 <script>
-function prepareReply(username, shotId) {
-    const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
-    if (!form) return;
-    const textarea = form.querySelector('textarea[name="body"]');
-    if (!textarea) return;
-    textarea.value = `@${username} ` + textarea.value; 
-    textarea.focus();
-    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    function prepareReply(username, shotId) {
+        const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
+        if (!form) return;
+        const textarea = form.querySelector('textarea[name="body"]');
+        if (!textarea) return;
+        textarea.value = `@${username} ` + textarea.value;
+        textarea.focus();
+        form.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }
+
+    function sendGetInTouchMessage(event, shotId, formElement) {
+        event.preventDefault();
+        const url = formElement.getAttribute('action');
+        const formData = new FormData(formElement);
+
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': formElement.querySelector('input[name="_token"]').value
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+
+                    formElement.reset();
+
+                    closeGetInTouchModal(shotId);
+                } else {
+                    alert('Terjadi kesalahan, silakan coba lagi.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal mengirim pesan. Pastikan detail proyek minimal 50 karakter.');
+            });
+    }
+    function sendGetInTouchMessage(event, shotId, formElement) {
+    event.preventDefault(); 
+
+    if (!formElement) {
+        alert('Form tidak ditemukan!');
+        return;
+    }
+
+    const url = formElement.getAttribute('action');
+    const formData = new FormData(formElement);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': formElement.querySelector('input[name="_token"]').value
+        },
+        body: formData
+    })
+    .then(async response => {
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            alert(data.message); 
+            formElement.reset(); 
+            closeGetInTouchModal(shotId); 
+        } else {
+            if (data.errors) {
+                const errorMessages = Object.values(data.errors).flat().join('\n');
+                alert('Gagal:\n' + errorMessages);
+            } else {
+                alert('Gagal: ' + (data.message || 'Terjadi kesalahan.'));
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Koneksi gagal atau ada error di Controller kamu.');
+    });
 }
 </script>

@@ -185,60 +185,45 @@
     };
 
     window.sendGetInTouchMessage = function (event, shotId, form) {
-        event.preventDefault();
+    event.preventDefault(); 
 
-        const designerEmail = form.dataset.designerEmail;
-        const designerUsername = form.dataset.designerUsername || 'Designer';
-        const shotTitle = form.dataset.shotTitle || 'Project';
+    if (!form) {
+        alert('Form tidak ditemukan!');
+        return;
+    }
 
-        const message = form.querySelector('[name="message"]').value.trim();
-        const targetDate = form.querySelector('[name="target_date"]').value;
-        const budget = form.querySelector('[name="budget"]').value;
-        const recommendBudget = form.querySelector('[name="recommend_budget"]').checked;
+    const url = form.getAttribute('action');
+    const formData = new FormData(form);
 
-        if (!designerEmail) {
-            alert('Email designer belum tersedia.');
-            return;
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+        },
+        body: formData
+    })
+    .then(async response => {
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            alert(data.message); 
+            form.reset(); 
+            window.closeGetInTouchModal(shotId);
+        } else {
+            if (data.errors) {
+                const errorMessages = Object.values(data.errors).flat().join('\n');
+                alert('Validasi Gagal:\n' + errorMessages);
+            } else {
+                alert('Gagal: ' + (data.message || 'Terjadi kesalahan sistem.'));
+            }
         }
-
-        if (message.length < 50) {
-            alert('Project details minimal 50 karakter.');
-            return;
-        }
-
-        const subject = `Project inquiry for ${shotTitle}`;
-
-        const body = `
-Hi ${designerUsername},
-
-I'm interested in working with you.
-
-Project:
-${shotTitle}
-
-Project Details:
-${message}
-
-Target Date:
-${targetDate}
-
-Project Budget:
-${recommendBudget ? 'Please recommend a budget' : 'Rp ' + budget}
-
-Thank you.
-        `.trim();
-
-        const mailtoUrl =
-            `mailto:${designerEmail}` +
-            `?subject=${encodeURIComponent(subject)}` +
-            `&body=${encodeURIComponent(body)}`;
-
-        window.location.href = mailtoUrl;
-
-        form.reset();
-
-        window.closeGetInTouchModal(shotId);
-    };
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Koneksi gagal atau terjadi masalah di server (Controller).');
+    });
+};
 </script>
 
 <script>

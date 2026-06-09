@@ -26,6 +26,7 @@ use App\Imports\ApplicationsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\PostController;
 use App\Models\Job;
+use App\Http\Controllers\ProjectInquiryController;
 
 Route::get('/', [ShotController::class, 'home'])->name('home');
 
@@ -347,5 +348,7 @@ Route::get('/posts/create', [PostController::class, 'create'])
     [ShotController::class, 'destroy']
     
 )->name('shots.destroy');
+
+Route::post('/shots/{shot}/inquiry', [ProjectInquiryController::class, 'store'])->name('project.inquiry.store');
 
 require __DIR__.'/auth.php';
