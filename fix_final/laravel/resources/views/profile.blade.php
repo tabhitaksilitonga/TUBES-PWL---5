@@ -60,6 +60,7 @@
         }"
         @keydown.escape.window="closeModal()"
         class="py-12 bg-white dark:bg-gray-900 transition-colors duration-300">
+        
         <div class="max-w-7xl mx-auto px-6">
 
             <div class="flex flex-col items-center text-center mb-16">
@@ -325,7 +326,7 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                     </div>
 
@@ -430,35 +431,32 @@
             @endif
         </div>
 
-    </div>
-
-    <div
-        x-show="showModal"
-        x-transition.opacity
-        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-        @click.self="closeModal()"
-        style="display: none;">
         <div
             x-show="showModal"
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 scale-95"
-            x-transition:enter-end="opacity-100 scale-100"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100 scale-100"
-            x-transition:leave-end="opacity-0 scale-95"
-            class="w-full max-w-5xl max-h-[90vh] overflow-y-auto"
-            @click.stop>
-            <div x-show="modalLoading" class="bg-white rounded-[32px] p-12 text-center">
-                <div class="animate-spin w-8 h-8 border-4 border-gray-200 border-t-[#ea4c89] rounded-full mx-auto mb-4"></div>
-                <p class="text-gray-500">Loading shot...</p>
+            x-transition.opacity
+            class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            @click.self="closeModal()"
+            style="display: none;">
+            <div
+                x-show="showModal"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="w-full max-w-5xl max-h-[90vh] overflow-y-auto"
+                @click.stop>
+                <div x-show="modalLoading" class="bg-white rounded-[32px] p-12 text-center">
+                    <div class="animate-spin w-8 h-8 border-4 border-gray-200 border-t-[#ea4c89] rounded-full mx-auto mb-4"></div>
+                    <p class="text-gray-500">Loading shot...</p>
+                </div>
+
+                <div x-html="modalContent"></div>
             </div>
-
-            <div x-html="modalContent"></div>
         </div>
-    </div>
 
-    </div>
-    <script>
+    </div> <script>
         function prepareReply(username, shotId) {
             setTimeout(() => {
                 const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
@@ -481,5 +479,5 @@
                 }
             }, 100);
         }
-    </script>>
+    </script>
 </x-app-layout>

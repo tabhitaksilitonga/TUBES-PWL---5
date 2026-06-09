@@ -331,18 +331,11 @@ Route::get('/posts/create', [PostController::class, 'create'])
     ->name('posts.create');
     Route::post('/shots', [PostController::class, 'store'])
     ->name('shots.store');
-
-    Route::get('/shots/{shot}', [ShotController::class, 'show'])
-    ->name('shots.show');
    
     Route::delete(
     '/shots/{id}',
     [ShotController::class, 'destroy']
     
 )->name('shots.destroy');
-
-Route::get('/shots/{id}', [ShotController::class, 'show'])
-    ->name('shots.show');
-
 
 require __DIR__.'/auth.php';
