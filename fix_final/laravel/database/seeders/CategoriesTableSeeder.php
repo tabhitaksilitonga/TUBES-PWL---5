@@ -21,18 +21,18 @@ class CategoriesTableSeeder extends Seeder
         \DB::table('categories')->insert(array (
             0 => 
             array (
-                'id' => 1,
-                'name' => 'discover',
-            ),
-            1 => 
-            array (
                 'id' => 2,
                 'name' => 'animation',
             ),
-            2 => 
+            1 => 
             array (
                 'id' => 3,
                 'name' => 'branding',
+            ),
+            2 => 
+            array (
+                'id' => 1,
+                'name' => 'discover',
             ),
             3 => 
             array (

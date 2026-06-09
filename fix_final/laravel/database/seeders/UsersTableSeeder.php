@@ -1710,15 +1710,15 @@ class UsersTableSeeder extends Seeder
         'email' => 'neppa@gmail.com',
         'email_verified_at' => NULL,
         'password' => '$2y$12$xpIlzMOZpCtt42YhGaIbve5f8SJ9Sf9oWfq16r23eIbJE32P/BP7W',
-        'avatar_url' => 'http://127.0.0.1:8000/avatars/1780912579_6a2691c3a23e6.png',
-        'bio' => 'dribbble sbd pwl',
+        'avatar_url' => 'http://127.0.0.1:8000/avatars/1781035736_6a2872d8cdabd.png',
+        'bio' => '-',
         'location' => 'medan',
         'website' => NULL,
         'role' => 'admin
 ',
         'remember_token' => NULL,
         'created_at' => '2026-05-17 17:49:59',
-        'updated_at' => '2026-06-08 09:56:19',
+        'updated_at' => '2026-06-09 20:08:56',
     ),
     100 => 
     array (
@@ -1736,6 +1736,23 @@ class UsersTableSeeder extends Seeder
         'remember_token' => NULL,
         'created_at' => '2026-05-18 17:52:24',
         'updated_at' => '2026-05-18 17:52:24',
+    ),
+    101 => 
+    array (
+        'id' => 105,
+        'username' => 'tes',
+        'full_name' => 'tes lagi',
+        'email' => 'tes@gmail.com',
+        'email_verified_at' => NULL,
+        'password' => '$2y$12$mJtgIw6wDxba6mq.hs/MPOJFOZDHbyjaWvSdq/pGSgOHmM6XmfclW',
+        'avatar_url' => NULL,
+        'bio' => NULL,
+        'location' => NULL,
+        'website' => NULL,
+        'role' => 'user',
+        'remember_token' => NULL,
+        'created_at' => '2026-06-09 19:17:08',
+        'updated_at' => '2026-06-09 19:17:08',
     ),
 ));
         

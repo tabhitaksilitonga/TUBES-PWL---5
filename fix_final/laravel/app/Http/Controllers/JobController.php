@@ -50,15 +50,7 @@ class JobController extends Controller
     {
         $job->load('poster:id,username,email,avatar_url');
 
-        $hasApplied = false;
-
-        if (Auth::check()) {
-            $hasApplied = $job->applications()
-                ->where('applicant_id', Auth::id())
-                ->exists();
-        }
-
-        return view('jobs.show', compact('job', 'hasApplied'));
+        return view('jobs.show', compact('job'));
     }
 
     public function create()

@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(UsersTableSeeder::class);
         $this->call(CategoriesTableSeeder::class);
-        $this->call(ApplicationsTableSeeder::class);
         $this->call(CollectionsTableSeeder::class);
         $this->call(CollectionItemsTableSeeder::class);
         $this->call(ShotsTableSeeder::class);
@@ -25,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(FollowsTableSeeder::class);
         $this->call(JobsTableSeeder::class);
         $this->call(LikesTableSeeder::class);
+        $this->call(ProjectInquiriesTableSeeder::class);
 
         Schema::enableForeignKeyConstraints();
     }

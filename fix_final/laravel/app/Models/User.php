@@ -89,11 +89,6 @@ class User extends Authenticatable
         return $this->hasMany(Job::class, 'poster_id');
     }
 
-    public function applications()
-    {
-        return $this->hasMany(Application::class, 'applicant_id');
-    }
-
     public function isFollowing($user)
     {
         if (!$user) {

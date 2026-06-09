@@ -11,19 +11,6 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\IsAdmin;
-use App\Imports\UsersImport;
-use App\Imports\ShotsImport;
-use App\Imports\CollectionsImport;
-use App\Imports\ShotTagsImport;
-use App\Imports\TagsImport;
-use App\Imports\ShotCategoriesImport;
-use App\Imports\LikesImport;
-use App\Imports\FollowsImport;
-use App\Imports\CommentsImport;
-use App\Imports\CollectionItemsImport;
-use App\Imports\JobsImport;
-use App\Imports\ApplicationsImport;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\PostController;
 use App\Models\Job;
 use App\Http\Controllers\ProjectInquiryController;
@@ -210,78 +197,12 @@ Route::get('/jobs/{id}', function ($id) {
     Route::put('/jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
     Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
     
-    Route::get('/jobs/{job}/applications', [ApplicationController::class, 'jobApplications'])
-        ->name('jobs.applications');
-    
-    Route::patch('/applications/{application}/status', [ApplicationController::class, 'updateStatus'])
-        ->name('applications.update-status');
-    
-    Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])
-        ->name('jobs.apply');
-    
-    Route::get('/my-applications', [ApplicationController::class, 'myApplications'])
-        ->name('applications.my');
 });
 
 Route::middleware([IsAdmin::class])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::resource('admin/users', AdminUserController::class)->names('admin.users');
     Route::get('/admin/reports', [ReportController::class, 'index'])->name('admin.reports.index');
-});
-
-Route::get('/import-shots', function () {
-    Excel::import(new ShotsImport, public_path('shots.csv'));
-    return 'Shots Imported Successfully';
-});
-
-Route::get('/import-collections', function () {
-    Excel::import(new CollectionsImport, public_path('collections.csv'));
-    return 'Collections Imported Successfully';
-});
-
-Route::get('/import-shot-tags', function () {
-    Excel::import(new ShotTagsImport, public_path('shot_tags.csv'));
-    return 'Shot Tags Imported Successfully';
-});
-
-Route::get('/import-tags', function () {
-    Excel::import(new TagsImport, public_path('tags.csv'));
-    return 'Tags Imported Successfully';
-});
-
-Route::get('/import-shot-categories', function () {
-    Excel::import(new ShotCategoriesImport, public_path('shot_categories.csv'));
-    return 'Shot Categories Imported Successfully';
-});
-
-Route::get('/import-likes', function () {
-    Excel::import(new LikesImport, public_path('likes.csv'));
-    return 'Likes Imported Successfully';
-});
-
-Route::get('/import-follows', function () {
-    Excel::import(new FollowsImport, public_path('follows.csv'));
-    return 'Follows Imported Successfully';
-});
-
-Route::get('/import-comments', function () {
-    Excel::import(new CommentsImport, public_path('comments.csv'));
-    return 'Comments Imported Successfully';
-});
-
-Route::get('/import-collection-items', function () {
-    Excel::import(new CollectionItemsImport, public_path('collection_items.csv'));
-    return 'Collection Items Imported Successfully';
-});
-
-Route::get('/import-jobs', function () {
-    Excel::import(new JobsImport, public_path('jobs.csv'));
-    return 'Jobs Imported Successfully';
-});
-
-Route::get('/import-applications', function () {
-    Excel::import(new ApplicationsImport, public_path('applications.csv'));
-    return 'Applications Imported Successfully';
 });
 
 Route::get('/jobs/{id}', function ($id) {
