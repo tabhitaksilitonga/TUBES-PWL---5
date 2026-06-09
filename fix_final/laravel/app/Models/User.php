@@ -17,7 +17,6 @@ class User extends Authenticatable
         'avatar_url',
         'bio',
         'location',
-        'website',
         'role',
     ];
 

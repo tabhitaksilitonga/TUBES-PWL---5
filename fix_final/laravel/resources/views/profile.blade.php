@@ -120,8 +120,6 @@
                         x-text="isFollowing ? 'Following' : 'Follow'">
                         Follow
                     </button>
-
-                    <button class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition">Hire Me</button>
                     @endif
                 </div>
             </div>

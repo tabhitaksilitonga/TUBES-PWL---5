@@ -120,15 +120,6 @@ Example: Speciality: UI, UX, Product Design.">{{ old('description') }}</textarea
             @error('apply_url') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
-        <div class="mb-8">
-            <label class="block font-medium text-gray-700 mb-2">Company Website (Optional)</label>
-            <input type="url" name="website" value="{{ old('website') }}"
-                class="w-full border border-gray-300 rounded-lg px-4 py-2.5"
-                placeholder="https://your-company.com">
-            <p class="text-xs text-gray-500 mt-1">Company website will appear in the job detail page.</p>
-            @error('website') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-        </div>
-
         <div class="flex gap-4">
             <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-lg font-medium transition">
                 Post Job
