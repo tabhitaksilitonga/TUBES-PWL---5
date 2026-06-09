@@ -76,18 +76,18 @@
                 Get in touch
             </a>
             @endauth
-            
-             {{-- Tombol Delete Khusus Pemilik Shots --}}
+
+            {{-- Tombol Delete Khusus Pemilik Shots --}}
             @auth
-                @if(auth()->id() === $shot->user_id)
-                    <form action="{{ route('shots.destroy', $shot->id) }}" method="POST" onsubmit="return confirm('Apakah kamu yakin ingin menghapus postingan ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-red-600 transition text-sm shadow-md">
-                            Delete
-                        </button>
-                    </form>
-                @endif
+            @if(auth()->id() === $shot->user_id)
+            <form action="{{ route('shots.destroy', $shot->id) }}" method="POST" onsubmit="return confirm('Apakah kamu yakin ingin menghapus postingan ini?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-red-600 transition text-sm shadow-md">
+                    Delete
+                </button>
+            </form>
+            @endif
             @endauth
             <button @click="closeModal()" class="ml-2 w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition">
                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,6 +172,14 @@
                         <p class="text-gray-600 text-sm mt-1">
                             {{ $comment->body }}
                         </p>
+                        @auth
+                        <button
+                            type="button"
+                            onclick="prepareReply('{{ $comment->user->username }}', '{{ $shot->id }}')"
+                            class="text-xs text-gray-400 hover:text-gray-900 font-semibold mt-1.5 transition block">
+                            Reply
+                        </button>
+                        @endauth
                     </div>
                 </div>
 
@@ -363,3 +371,14 @@
 </div>
 </div>
 @endauth
+<script>
+function prepareReply(username, shotId) {
+    const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
+    if (!form) return;
+    const textarea = form.querySelector('textarea[name="body"]');
+    if (!textarea) return;
+    textarea.value = `@${username} ` + textarea.value; 
+    textarea.focus();
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+</script>

@@ -452,4 +452,28 @@
         </div>
 
     </div>
+    <script>
+    function prepareReply(username, shotId) {
+        setTimeout(() => {
+            const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
+            
+            if (form) {
+                const textarea = form.querySelector('textarea[name="body"]');
+                
+                if (textarea) {
+                    textarea.value = `@${username} ` + textarea.value;
+                    textarea.focus();
+                } else {
+                    console.log('Kolom komentar tidak ditemukan.');
+                }
+            } else {
+                const globalTextarea = document.querySelector('textarea[name="body"]');
+                if (globalTextarea) {
+                    globalTextarea.value = `@${username} ` + globalTextarea.value;
+                    globalTextarea.focus();
+                }
+            }
+        }, 100); 
+    }
+    </script>>
 </x-app-layout>

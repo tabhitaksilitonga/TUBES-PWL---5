@@ -241,5 +241,31 @@ Thank you.
     };
 </script>
 
+<script>
+function prepareReply(username, shotId) {
+    setTimeout(() => {
+        const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
+        
+        if (form) {
+            // 3. Cari textarea di dalam form spesifik tersebut
+            const textarea = form.querySelector('textarea[name="body"]');
+            if (textarea) {
+                textarea.value = `@${username} ` + textarea.value;
+                textarea.focus();
+                return; 
+            }
+        }
+ 
+        const globalTextarea = document.querySelector('textarea[name="body"]');
+        if (globalTextarea) {
+            globalTextarea.value = `@${username} ` + globalTextarea.value;
+            globalTextarea.focus();
+        } else {
+            console.error('Kolom komentar "textarea[name=\'body\']" tidak ditemukan di halaman ini.');
+        }
+    }, 100);
+}
+</script>
+
 </body>
 </html>

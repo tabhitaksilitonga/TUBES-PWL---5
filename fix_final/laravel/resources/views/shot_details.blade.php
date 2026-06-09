@@ -83,22 +83,18 @@
         <div class="max-w-6xl mx-auto bg-white rounded-[32px] shadow-xl overflow-hidden shot-detail-wrapper">
             <div class="shot-detail-header flex items-center justify-between px-8 py-6 border-b border-gray-100">
                 <div class="flex items-center gap-4">
-    <a href="{{ route('user.profile', ['username' => $shot->user->username ?? '']) }}" class="relative block">
-        <img src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($shot->user->username ?? 'U') }}" alt="{{ $shot->user->username ?? 'User' }}" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
-        @if($shot->user->available_for_work ?? false)
-        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-        @endif
-    </a>
-    
-    <div>
-        <a href="{{ route('user.profile', ['username' => $shot->user->username ?? '']) }}" class="block">
-            <h2 class="font-bold text-gray-900 text-lg leading-tight">{{ $shot->user->username ?? 'Unknown User' }}</h2>
-        </a>
-        @if($shot->user->available_for_work ?? false)
-        <p class="text-green-600 text-sm font-medium">Available for work</p>
-        @endif
-    </div>
-</div>
+                    <div class="relative">
+                        <img src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($shot->user->username ?? 'U') }}" alt="{{ $shot->user->username ?? 'User' }}" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
+                        @if($shot->user->available_for_work ?? false)
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                        @endif
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-900 text-lg leading-tight">{{ $shot->user->username ?? 'Unknown User' }}</h2>
+                        @if($shot->user->available_for_work ?? false)
+                        <p class="text-green-600 text-sm font-medium">Available for work</p>
+                        @endif
+                    </div>
                     @if(auth()->check() && auth()->id() !== $shot->user_id)
                     <button class="btn-follow ml-3 px-4 py-1.5 rounded-full font-semibold text-sm transition {{ $shot->isFollowedBy(auth()->user()) ? 'following' : 'not-following bg-[#0d0c22] text-white' }}" data-user-id="{{ $shot->user_id }}" onclick="toggleFollow(event, this)">
                         {{ $shot->isFollowedBy(auth()->user()) ? 'Following' : 'Follow' }}
