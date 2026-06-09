@@ -351,4 +351,6 @@ Route::get('/posts/create', [PostController::class, 'create'])
 
 Route::post('/shots/{shot}/inquiry', [ProjectInquiryController::class, 'store'])->name('project.inquiry.store');
 
+Route::get('/my-inquiries', [App\Http\Controllers\ProjectInquiryController::class, 'index'])->name('my.inquiries');
+
 require __DIR__.'/auth.php';

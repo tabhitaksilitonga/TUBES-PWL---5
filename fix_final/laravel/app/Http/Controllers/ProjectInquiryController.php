@@ -14,6 +14,7 @@ class ProjectInquiryController extends Controller
             'target_date' => 'required|string',
             'budget' => 'nullable|numeric|min:0',
             'recommend_budget' => 'nullable',
+            'contact_person' => 'required|string|max:255',
         ]);
 
         ProjectInquiry::create([
@@ -23,11 +24,21 @@ class ProjectInquiryController extends Controller
             'target_date' => $request->target_date,
             'project_budget' => $request->budget,
             'recommend_budget' => $request->has('recommend_budget'), 
+            'contact_person' => $request->contact_person, 
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Pesan Project Inquiry berhasil dikirim!'
         ]);
+    }
+
+    public function index()
+    {
+        $inquiries = \App\Models\ProjectInquiry::whereHas('shot', function($query) {
+            $query->where('user_id', auth()->id());
+        })->with(['shot', 'user'])->latest()->get();
+
+        return view('inquiries.index', compact('inquiries'));
     }
 }

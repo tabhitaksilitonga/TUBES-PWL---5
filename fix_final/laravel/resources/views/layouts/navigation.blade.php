@@ -189,6 +189,8 @@
 
                         <a href="{{ route('user.profile', Auth::user()->username) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">Profile</a>
                         <a href="{{ route('applications.my') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">My Applications</a>
+                        
+                        <a href="{{ url('/my-inquiries') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">My Inquiries</a>
 
                         @if(in_array(Auth::user()->role, ['employer', 'admin']))
                             <a href="{{ route('jobs.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">Post a Job</a>
@@ -231,6 +233,8 @@
             @auth
                 <a href="{{ route('user.profile', Auth::user()->username) }}" class="block py-2 text-base text-gray-600 hover:text-[#ea4c89]">Profile</a>
                 <a href="{{ route('applications.my') }}" class="block py-2 text-base text-gray-600 hover:text-[#ea4c89]">My Applications</a>
+                
+                <a href="{{ url('/my-inquiries') }}" class="block py-2 text-base text-gray-600 hover:text-[#ea4c89]">My Inquiries</a>
 
                 @if(in_array(Auth::user()->role, ['employer', 'admin']))
                     <a href="{{ route('jobs.create') }}" class="block py-2 text-base text-gray-600 hover:text-[#ea4c89]">Post a Job</a>

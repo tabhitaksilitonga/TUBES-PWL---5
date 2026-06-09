@@ -18,5 +18,16 @@ class ProjectInquiry extends Model
         'target_date',
         'project_budget',
         'recommend_budget',
+        'contact_person',
     ];
+
+    public function shot()
+    {
+        return $this->belongsTo(Shot::class, 'shots_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

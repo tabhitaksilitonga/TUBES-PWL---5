@@ -65,12 +65,14 @@
             </button>
 
             @auth
+            @if(auth()->id() !== $shot->user_id)
             <button
                 type="button"
                 onclick="openGetInTouchModal({{ $shot->id }})"
                 class="bg-[#0d0c22] text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition shadow-lg">
                 Get in touch
             </button>
+            @endif
             @else
             <a href="{{ route('login') }}" class="bg-[#0d0c22] text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition shadow-lg">
                 Get in touch
@@ -361,6 +363,16 @@
                     </label>
                 </div>
 
+                <div class="mb-5">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Contact Person</label>
+                    <input
+                        type="text"
+                        name="contact_person"
+                        placeholder="phone number or email"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 transition"
+                        required>
+                </div>
+
                 <button
                     type="button"
                     onclick="sendGetInTouchMessage(event, {{ $shot->id }}, document.getElementById('form-get-in-touch-{{ $shot->id }}'))"
@@ -420,44 +432,45 @@
                 alert('Gagal mengirim pesan. Pastikan detail proyek minimal 50 karakter.');
             });
     }
+
     function sendGetInTouchMessage(event, shotId, formElement) {
-    event.preventDefault(); 
+        event.preventDefault();
 
-    if (!formElement) {
-        alert('Form tidak ditemukan!');
-        return;
-    }
-
-    const url = formElement.getAttribute('action');
-    const formData = new FormData(formElement);
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': formElement.querySelector('input[name="_token"]').value
-        },
-        body: formData
-    })
-    .then(async response => {
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-            alert(data.message); 
-            formElement.reset(); 
-            closeGetInTouchModal(shotId); 
-        } else {
-            if (data.errors) {
-                const errorMessages = Object.values(data.errors).flat().join('\n');
-                alert('Gagal:\n' + errorMessages);
-            } else {
-                alert('Gagal: ' + (data.message || 'Terjadi kesalahan.'));
-            }
+        if (!formElement) {
+            alert('Form tidak ditemukan!');
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Koneksi gagal atau ada error di Controller kamu.');
-    });
-}
+
+        const url = formElement.getAttribute('action');
+        const formData = new FormData(formElement);
+
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': formElement.querySelector('input[name="_token"]').value
+                },
+                body: formData
+            })
+            .then(async response => {
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert(data.message);
+                    formElement.reset();
+                    closeGetInTouchModal(shotId);
+                } else {
+                    if (data.errors) {
+                        const errorMessages = Object.values(data.errors).flat().join('\n');
+                        alert('Gagal:\n' + errorMessages);
+                    } else {
+                        alert('Gagal: ' + (data.message || 'Terjadi kesalahan.'));
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Koneksi gagal atau ada error di Controller kamu.');
+            });
+    }
 </script>
