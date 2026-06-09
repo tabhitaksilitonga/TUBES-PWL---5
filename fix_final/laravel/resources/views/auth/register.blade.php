@@ -161,7 +161,7 @@
                 <!-- BUTTON -->
                 <button
                     type="submit"
-                    class="w-full py-4 rounded-full bg-gray-900 dark:bg-white text-white dark:text-black text-[15px] font-semibold mt-2 transition duration-300 hover:bg-black hover:-translate-y-[2px]"
+                    class="w-full py-4 rounded-full bg-gray-900 dark:bg-white text-white dark:text-black text-[15px] font-semibold mt-2 transition duration-300 hover:bg-black hover:-translate-y-[2px] hover:text-white"
                 >
                     Create Account
                 </button>
