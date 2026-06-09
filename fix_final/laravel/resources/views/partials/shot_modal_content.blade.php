@@ -1,10 +1,10 @@
-<div class="bg-white rounded-[32px] shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+<div class="bg-white rounded-[32px] shadow-2xl flex flex-col max-h-[85vh]">
 
-    <div class="flex items-center justify-between px-8 py-6 border-b border-gray-100 sticky top-0 bg-white z-10">
+    <div class="flex-shrink-0 flex items-center justify-between px-8 py-5 border-b border-gray-100 bg-white rounded-t-[32px] z-[60]">
         <div class="flex items-center gap-4">
             <a href="{{ route('user.profile', ['username' => $shot->user->username ?? '']) }}" class="block">
                 <div class="relative">
-                    <img src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($shot->user->full_name ?? $shot->user->username ?? 'User') }}"
+                    <img src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($shot->user->full_name ?? $shot->user->username ?? 'U') }}"
                         alt="{{ $shot->user->username ?? 'User' }}"
                         class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
                 </div>
@@ -65,14 +65,12 @@
             </button>
 
             @auth
-            @if(auth()->id() !== $shot->user_id)
             <button
                 type="button"
                 onclick="openGetInTouchModal({{ $shot->id }})"
                 class="bg-[#0d0c22] text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition shadow-lg">
                 Get in touch
             </button>
-            @endif
             @else
             <a href="{{ route('login') }}" class="bg-[#0d0c22] text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition shadow-lg">
                 Get in touch
@@ -99,7 +97,7 @@
         </div>
     </div>
 
-    <div class="p-8">
+    <div class="overflow-y-auto p-8 rounded-b-[32px]">
         <h2 class="text-4xl font-bold text-gray-900 mb-6">
             {{ $shot->title }}
         </h2>
