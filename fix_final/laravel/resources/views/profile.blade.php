@@ -104,7 +104,7 @@
                     @if(Auth::id() === $user->id)
                     <a href="{{ route('profile.edit') }}" class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition">Edit Profile</a>
                     @else
-                    
+
                     <button
                         @click="toggleFollow({{ $user->id }})"
                         :class="isFollowing ? 'bg-gray-200 text-black dark:bg-gray-700 dark:text-white' : 'bg-black text-white dark:bg-white dark:text-black'"
@@ -112,7 +112,7 @@
                         x-text="isFollowing ? 'Following' : 'Follow'">
                         Follow
                     </button>
-                    
+
                     <button class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition">Hire Me</button>
                     @endif
                 </div>
@@ -139,341 +139,347 @@
                 </nav>
             </div>
 
-            <div>
-                @if($tab === 'work')
+            @if($tab === 'work')
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                    @forelse($shots as $shot)
+                @forelse($shots as $shot)
 
-                    <div
-                        class="group block cursor-pointer"
-                        @click="openShotModal({{ $shot->id }})">
-                        <div class="rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 aspect-[4/3] mb-3 relative">
-                            <img
-                                src="{{ str_starts_with($shot->image_url, 'http') 
-                    ? $shot->image_url 
-                    : asset('storage/' . $shot->image_url) }}"
-                                class="w-full h-full object-cover group-hover:opacity-90 transition">
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-gray-900 dark:text-white text-sm truncate">
-                                {{ $shot->title }}
-                            </h3>
-                        </div>
+                <div
+                    class="group block cursor-pointer"
+                    @click="openShotModal({{ $shot->id }})">
+                    <div class="rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 aspect-[4/3] mb-3 relative">
+                        <img
+                            src="{{ str_starts_with($shot->image_url, 'http') ? $shot->image_url : asset('storage/' . $shot->image_url) }}"
+                            class="w-full h-full object-cover group-hover:opacity-90 transition">
                     </div>
 
-                    @empty
-
-                    <div class="col-span-3 text-center py-20 text-gray-400 dark:text-gray-500 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
-                        <a
-                            href="{{ route('posts.create') }}"
-                            class="text-lg font-medium text-gray-900 dark:text-white hover:text-pink-500 transition">
-                            Upload your first shot
-                        </a>
-
-                        <p class="text-sm mt-1">
-                            Show off your best work. Get feedback, likes and be a part of a community.
-                        </p>
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-gray-900 dark:text-white text-sm truncate">
+                            {{ $shot->title }}
+                        </h3>
                     </div>
-
-                    @endforelse
-
                 </div>
 
-                @elseif($tab === 'collections')
+                @empty
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-                    @forelse($collections as $collection)
-
+                <div class="col-span-3 text-center py-20 text-gray-400 dark:text-gray-500 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
                     <a
-                        href="{{ route('collections.show', $collection->id) }}"
-                        class="group block">
-
-                        <div class="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-lg transition">
-
-                            <div class="grid grid-cols-2 gap-1 h-52 bg-gray-100">
-
-                                @forelse($collection->shots->take(4) as $shot)
-
-                                <img
-                                    src="{{ str_starts_with($shot->image_url, 'http') ? $shot->image_url : asset('storage/' . $shot->image_url) }}"
-                                    class="w-full h-full object-cover">
-
-                                @empty
-
-                                <div class="col-span-2 flex items-center justify-center text-gray-400">
-                                    Empty Collection
-                                </div>
-
-                                @endforelse
-
-                            </div>
-
-                            <div class="p-4">
-
-                                <h3 class="font-bold text-gray-900 dark:text-white">
-                                    {{ $collection->name }}
-                                </h3>
-
-                                <p class="text-sm text-gray-500 mt-1">
-                                    {{ $collection->shots->count() }} shots
-                                </p>
-
-                            </div>
-
-                        </div>
-
+                        href="{{ route('posts.create') }}"
+                        class="text-lg font-medium text-gray-900 dark:text-white hover:text-pink-500 transition">
+                        Upload your first shot
                     </a>
 
-                    @empty
-
-                    <div class="col-span-3 text-center py-20 text-gray-400">
-                        Belum ada collection
-                    </div>
-
-                    @endforelse
-
+                    <p class="text-sm mt-1">
+                        Show off your best work. Get feedback, likes and be a part of a community.
+                    </p>
                 </div>
 
-                @elseif($tab === 'liked')
+                @endforelse
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
 
-                    @forelse($shots as $shot)
+            @if($shots->count() > 0)
+            <div class="flex justify-center w-full mt-12 mb-8">
+                <a href="{{ route('posts.create') }}"
+                    class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-semibold rounded-full transition shadow-sm">
+                    Load more work
+                </a>
+            </div>
+            @endif
 
-                    <div
-                        class="relative group cursor-pointer"
-                        @click="openShotModal({{ $shot->id }})">
+            @elseif($tab === 'collections')
 
-                        <div class="bg-white dark:bg-gray-900 rounded-[26px] p-3 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                            <div class="overflow-hidden rounded-[22px] bg-gray-100 relative">
+                @forelse($collections as $collection)
 
-                                <img
-                                    src="{{ \Illuminate\Support\Str::startsWith($shot->image_url, 'http') ? $shot->image_url : asset('storage/' . $shot->image_url) }}"
-                                    alt="{{ $shot->title }}"
-                                    onerror="this.src='https://placehold.co/600x400/eeeeee/999999?text=No+Image'"
-                                    class="w-full h-[260px] object-cover transition duration-500 group-hover:scale-[1.03] pointer-events-none">
+                <a
+                    href="{{ route('collections.show', $collection->id) }}"
+                    class="group block">
 
-                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-[22px]"></div>
+                    <div class="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-lg transition">
 
+                        <div class="grid grid-cols-2 gap-1 h-52 bg-gray-100">
+
+                            @forelse($collection->shots->take(4) as $shot)
+
+                            <img
+                                src="{{ str_starts_with($shot->image_url, 'http') ? $shot->image_url : asset('storage/' . $shot->image_url) }}"
+                                class="w-full h-full object-cover">
+
+                            @empty
+
+                            <div class="col-span-2 flex items-center justify-center text-gray-400">
+                                Empty Collection
                             </div>
 
-                            <div class="flex items-center justify-between mt-4 px-1">
+                            @endforelse
 
-                                <div class="flex items-center gap-3 min-w-0">
+                        </div>
 
-                                    <img
-                                        src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($shot->user->username ?? 'U') }}"
-                                        class="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-100">
+                        <div class="p-4">
 
-                                    <div class="min-w-0">
+                            <h3 class="font-bold text-gray-900 dark:text-white">
+                                {{ $collection->name }}
+                            </h3>
 
-                                        <h3 class="text-[14px] font-semibold text-[#0d0c22] dark:text-white truncate">
-                                            {{ $shot->user->username }}
-                                        </h3>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pink-50 text-pink-500">
-
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="currentColor"
-                                        class="w-4 h-4">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                    </svg>
-
-                                    <span
-                                        data-shot-id="{{ $shot->id }}"
-                                        class="like-count text-[13px] font-medium">
-                                        {{ $shot->likes_count }}
-                                    </span>
-
-                                </div>
-
-                            </div>
+                            <p class="text-sm text-gray-500 mt-1">
+                                {{ $collection->shots->count() }} shots
+                            </p>
 
                         </div>
 
                     </div>
 
-                    @empty
+                </a>
 
-                    <div class="col-span-full text-center py-20">
+                @empty
 
-                        <div class="mb-4 flex justify-center">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="w-16 h-16 text-gray-300"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-[#0d0c22] dark:text-white mb-2">
-                            No liked shots yet
-                        </h3>
-
-                        <p class="text-gray-500">
-                            Like some shots and they'll appear here.
-                        </p>
-
-                    </div>
-
-                    @endforelse
-
+                <div class="col-span-3 text-center py-20 text-gray-400">
+                    Belum ada collection
                 </div>
 
-                @elseif($tab === 'following' || $tab === 'followers')
+                @endforelse
 
-                <div class="max-w-4xl mx-auto">
+            </div>
 
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                        {{ $tab === 'following' ? 'Following' : 'Followers' }}
-                    </h2>
+            @elseif($tab === 'liked')
 
-                    <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                        @forelse($members as $member)
+                @forelse($shots as $shot)
 
-                        <div class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5">
+                <div
+                    class="relative group cursor-pointer"
+                    @click="openShotModal({{ $shot->id }})">
 
-                            <div class="flex items-center gap-4 min-w-0">
+                    <div class="bg-white dark:bg-gray-900 rounded-[26px] p-3 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+
+                        <div class="overflow-hidden rounded-[22px] bg-gray-100 relative">
+
+                            <img
+                                src="{{ \Illuminate\Support\Str::startsWith($shot->image_url, 'http') ? $shot->image_url : asset('storage/' . $shot->image_url) }}"
+                                alt="{{ $shot->title }}"
+                                onerror="this.src='https://placehold.co/600x400/eeeeee/999999?text=No+Image'"
+                                class="w-full h-[260px] object-cover transition duration-500 group-hover:scale-[1.03] pointer-events-none">
+
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-[22px]"></div>
+
+                        </div>
+
+                        <div class="flex items-center justify-between mt-4 px-1">
+
+                            <div class="flex items-center gap-3 min-w-0">
 
                                 <img
-                                    src="{{ $member->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($member->username ?? 'U') }}"
-                                    class="w-14 h-14 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+                                    src="{{ $shot->user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($shot->user->username ?? 'U') }}"
+                                    class="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-100">
 
                                 <div class="min-w-0">
 
-                                    <h3 class="font-bold text-gray-900 dark:text-white truncate">
-                                        {{ $member->full_name ?? $member->username }}
+                                    <h3 class="text-[14px] font-semibold text-[#0d0c22] dark:text-white truncate">
+                                        {{ $shot->user->username }}
                                     </h3>
-
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
-                                        @ {{ $member->username }}
-                                    </p>
-
-                                    <div class="flex gap-4 mt-1 text-xs text-gray-400">
-                                        <span>{{ $member->shots_count ?? 0 }} shots</span>
-                                        <span>{{ $member->followers_count ?? 0 }} followers</span>
-                                        <span>{{ $member->following_count ?? 0 }} following</span>
-                                    </div>
 
                                 </div>
 
                             </div>
 
-                            <a
-                                href="{{ route('user.profile', ['username' => $member->username]) }}"
-                                class="px-5 py-2 rounded-full bg-[#0d0c22] text-white dark:bg-white dark:text-[#0d0c22] text-sm font-semibold hover:opacity-80 transition">
-                                View Profile
-                            </a>
+                            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pink-50 text-pink-500">
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    class="w-4 h-4">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg>
+
+                                <span
+                                    data-shot-id="{{ $shot->id }}"
+                                    class="like-count text-[13px] font-medium">
+                                    {{ $shot->likes_count }}
+                                </span>
+
+                            </div>
 
                         </div>
-
-                        @empty
-
-                        <div class="text-center py-20 text-gray-400">
-
-                            @if($tab === 'following')
-                            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Belum mengikuti siapa pun
-                            </h3>
-                            <p>
-                                User yang kamu follow akan muncul di sini.
-                            </p>
-                            @else
-                            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Belum ada followers
-                            </h3>
-                            <p>
-                                User yang mengikuti akun ini akan muncul di sini.
-                            </p>
-                            @endif
-
-                        </div>
-
-                        @endforelse
 
                     </div>
 
                 </div>
 
-                @elseif($tab === 'about')
-                <div class="bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl text-gray-700 dark:text-gray-300">
-                    <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Tentang {{ $user->full_name }}</h2>
-                    <p>{{ $user->bio ?? 'User belum menulis bio lengkap.' }}</p>
-                    <div class="mt-6 text-sm text-gray-500">
-                        <p>Email Terhubung: {{ $user->email }}</p>
+                @empty
+
+                <div class="col-span-full text-center py-20">
+
+                    <div class="mb-4 flex justify-center">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-16 h-16 text-gray-300"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
                     </div>
-                </div>
-                @endif
-            </div>
 
-        </div>
+                    <h3 class="text-xl font-semibold text-[#0d0c22] dark:text-white mb-2">
+                        No liked shots yet
+                    </h3>
 
-        <div
-            x-show="showModal"
-            x-transition.opacity
-            class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            @click.self="closeModal()"
-            style="display: none;">
-            <div
-                x-show="showModal"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95"
-                class="w-full max-w-5xl max-h-[90vh] overflow-y-auto"
-                @click.stop>
-                <div x-show="modalLoading" class="bg-white rounded-[32px] p-12 text-center">
-                    <div class="animate-spin w-8 h-8 border-4 border-gray-200 border-t-[#ea4c89] rounded-full mx-auto mb-4"></div>
-                    <p class="text-gray-500">Loading shot...</p>
+                    <p class="text-gray-500">
+                        Like some shots and they'll appear here.
+                    </p>
+
                 </div>
 
-                <div x-html="modalContent"></div>
+                @endforelse
+
             </div>
+
+            @elseif($tab === 'following' || $tab === 'followers')
+
+            <div class="max-w-4xl mx-auto">
+
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                    {{ $tab === 'following' ? 'Following' : 'Followers' }}
+                </h2>
+
+                <div class="space-y-4">
+
+                    @forelse($members as $member)
+
+                    <div class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5">
+
+                        <div class="flex items-center gap-4 min-w-0">
+
+                            <img
+                                src="{{ $member->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($member->username ?? 'U') }}"
+                                class="w-14 h-14 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+
+                            <div class="min-w-0">
+
+                                <h3 class="font-bold text-gray-900 dark:text-white truncate">
+                                    {{ $member->full_name ?? $member->username }}
+                                </h3>
+
+                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                                    @ {{ $member->username }}
+                                </p>
+
+                                <div class="flex gap-4 mt-1 text-xs text-gray-400">
+                                    <span>{{ $member->shots_count ?? 0 }} shots</span>
+                                    <span>{{ $member->followers_count ?? 0 }} followers</span>
+                                    <span>{{ $member->following_count ?? 0 }} following</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <a
+                            href="{{ route('user.profile', ['username' => $member->username]) }}"
+                            class="px-5 py-2 rounded-full bg-[#0d0c22] text-white dark:bg-white dark:text-[#0d0c22] text-sm font-semibold hover:opacity-80 transition">
+                            View Profile
+                        </a>
+
+                    </div>
+
+                    @empty
+
+                    <div class="text-center py-20 text-gray-400">
+
+                        @if($tab === 'following')
+                        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Belum mengikuti siapa pun
+                        </h3>
+                        <p>
+                            User yang kamu follow akan muncul di sini.
+                        </p>
+                        @else
+                        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Belum ada followers
+                        </h3>
+                        <p>
+                            User yang mengikuti akun ini akan muncul di sini.
+                        </p>
+                        @endif
+
+                    </div>
+
+                    @endforelse
+
+                </div>
+
+            </div>
+
+            @elseif($tab === 'about')
+            <div class="bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl text-gray-700 dark:text-gray-300">
+                <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Tentang {{ $user->full_name }}</h2>
+                <p>{{ $user->bio ?? 'User belum menulis bio lengkap.' }}</p>
+                <div class="mt-6 text-sm text-gray-500">
+                    <p>Email Terhubung: {{ $user->email }}</p>
+                </div>
+            </div>
+            @endif
         </div>
 
     </div>
+
+    <div
+        x-show="showModal"
+        x-transition.opacity
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        @click.self="closeModal()"
+        style="display: none;">
+        <div
+            x-show="showModal"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="w-full max-w-5xl max-h-[90vh] overflow-y-auto"
+            @click.stop>
+            <div x-show="modalLoading" class="bg-white rounded-[32px] p-12 text-center">
+                <div class="animate-spin w-8 h-8 border-4 border-gray-200 border-t-[#ea4c89] rounded-full mx-auto mb-4"></div>
+                <p class="text-gray-500">Loading shot...</p>
+            </div>
+
+            <div x-html="modalContent"></div>
+        </div>
+    </div>
+
+    </div>
     <script>
-    function prepareReply(username, shotId) {
-        setTimeout(() => {
-            const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
-            
-            if (form) {
-                const textarea = form.querySelector('textarea[name="body"]');
-                
-                if (textarea) {
-                    textarea.value = `@${username} ` + textarea.value;
-                    textarea.focus();
+        function prepareReply(username, shotId) {
+            setTimeout(() => {
+                const form = document.querySelector(`form[onsubmit*="${shotId}"]`);
+
+                if (form) {
+                    const textarea = form.querySelector('textarea[name="body"]');
+
+                    if (textarea) {
+                        textarea.value = `@${username} ` + textarea.value;
+                        textarea.focus();
+                    } else {
+                        console.log('Kolom komentar tidak ditemukan.');
+                    }
                 } else {
-                    console.log('Kolom komentar tidak ditemukan.');
+                    const globalTextarea = document.querySelector('textarea[name="body"]');
+                    if (globalTextarea) {
+                        globalTextarea.value = `@${username} ` + globalTextarea.value;
+                        globalTextarea.focus();
+                    }
                 }
-            } else {
-                const globalTextarea = document.querySelector('textarea[name="body"]');
-                if (globalTextarea) {
-                    globalTextarea.value = `@${username} ` + globalTextarea.value;
-                    globalTextarea.focus();
-                }
-            }
-        }, 100); 
-    }
+            }, 100);
+        }
     </script>>
 </x-app-layout>
