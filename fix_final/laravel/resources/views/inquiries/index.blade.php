@@ -32,7 +32,7 @@
                         <th scope="col" class="w-1/5 px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Postingan Terkait</th>
                         <th scope="col" class="w-2/5 px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Detail Proyek</th>
                         <th scope="col" class="w-1/5 px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Target & Budget</th>
-                        <th scope="col" class="w-1/5 px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Aksi</th>
+                        <th scope="col" class="w-1/5 px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Contact Person</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
