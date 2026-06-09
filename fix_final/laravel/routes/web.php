@@ -71,6 +71,16 @@ Route::get('/shots/{id}', [ShotController::class, 'show'])->name('shots.detail')
 Route::get('/shots/{id}/modal', [ShotController::class, 'modal'])->name('shots.modal');
 
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
+
+Route::get('/jobs/create', [JobController::class, 'create'])
+    ->middleware('auth')
+    ->name('jobs.create');
+
+Route::post('/jobs', [JobController::class, 'store'])
+    ->middleware('auth')
+    ->name('jobs.store');
+
+    
 Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');
 
 Route::get('/talent', [UserController::class, 'talent'])

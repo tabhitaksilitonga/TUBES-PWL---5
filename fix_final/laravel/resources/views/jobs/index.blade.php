@@ -119,13 +119,13 @@
 
                                             @if($job->company_logo)
 
-                                                <img
-                                                    src="{{ $job->company_logo }}"
-                                                    alt="{{ $job->company_name }}"
-                                                    class="w-full h-full object-contain p-2"
-                                                >
+            <img
+                src="{{ \Illuminate\Support\Str::startsWith($job->company_logo, ['http://', 'https://']) ? $job->company_logo : asset('storage/' . $job->company_logo) }}"
+                alt="{{ $job->company_name }}"
+                class="w-full h-full object-contain p-2"
+            >
 
-                                            @else
+        @else
 
                                                 <span class="text-3xl font-bold text-gray-400">
                                                     {{ strtoupper(substr($job->company_name, 0, 1)) }}
@@ -274,6 +274,7 @@
                             type="checkbox"
                             name="specialties[]"
                             value="{{ $specialty }}"
+                            {{ in_array($specialty, request('specialties', [])) ? 'checked' : '' }}
                             class="w-6 h-6 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
                         >
 
@@ -325,6 +326,7 @@
                             type="checkbox"
                             name="job_type[]"
                             value="full-time"
+                            {{ in_array('full-time', request('job_type', [])) ? 'checked' : '' }}
                             class="w-6 h-6 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
                         >
 

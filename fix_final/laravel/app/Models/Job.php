@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use app\Models\jobs;
 
 class Job extends Model
 {
@@ -14,7 +13,10 @@ class Job extends Model
         'location',
         'job_type',
         'description',
+        'description_html',
         'apply_url',
+        'company_logo',
+        'website',
     ];
 
     protected $casts = [
@@ -23,9 +25,9 @@ class Job extends Model
     ];
 
     public function poster()
-   {
-    return $this->belongsTo(User::class, 'poster_id');
-   }
+    {
+        return $this->belongsTo(User::class, 'poster_id');
+    }
 
     public function applications()
     {
@@ -36,11 +38,4 @@ class Job extends Model
     {
         return $this->applications()->count();
     }
-
-    public function show(Job $job)
-{
-    $job->load('poster');
-
-    return view('jobs.show', compact('job'));
-}
 }

@@ -38,7 +38,7 @@
                     </span>
 
                     <span>
-                        📅 Posted {{ $job->created_at->format('F d, Y') }}
+                        📅 Posted {{ $job->created_at ? $job->created_at->format('F d, Y') : '-' }}
                     </span>
 
                 </div>
@@ -48,21 +48,36 @@
             <!-- DESCRIPTION -->
             <div class="prose prose-lg max-w-none prose-headings:text-[#0d0c22] prose-p:text-gray-700 prose-strong:text-[#0d0c22]">
 
-                {!! $job->description_html !!}
+                @if($job->description_html)
+                    {!! $job->description_html !!}
+                @else
+                    <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {{ $job->description }}
+                    </p>
+                @endif
 
             </div>
 
             <!-- BOTTOM APPLY BUTTON -->
             <div class="mt-14">
 
-                <a
-                    href="{{ $job->apply_url ?? '#' }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center justify-center px-10 h-14 rounded-full bg-[#0d0c22] hover:bg-pink-500 text-white text-lg font-semibold transition"
-                >
-                    Apply for this position
-                </a>
+                @if($job->apply_url)
+                    <a
+                        href="{{ $job->apply_url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center justify-center px-10 h-14 rounded-full bg-[#0d0c22] hover:bg-pink-500 text-white text-lg font-semibold transition"
+                    >
+                        Apply for this position
+                    </a>
+                @else
+                    <button
+                        type="button"
+                        class="inline-flex items-center justify-center px-10 h-14 rounded-full bg-gray-300 text-white text-lg font-semibold cursor-not-allowed"
+                    >
+                        Apply link unavailable
+                    </button>
+                @endif
 
             </div>
 
@@ -80,52 +95,60 @@
                     <div class="w-20 h-20 mx-auto mb-6 rounded-2xl overflow-hidden bg-white border border-gray-100 flex items-center justify-center p-2">
 
                         @if($job->company_logo)
-
                             <img
-                                src="{{ $job->company_logo }}"
+                                src="{{ \Illuminate\Support\Str::startsWith($job->company_logo, ['http://', 'https://']) ? $job->company_logo : asset('storage/' . $job->company_logo) }}"
                                 alt="{{ $job->company_name }}"
                                 class="max-w-full max-h-full object-contain"
                             >
-
+                        @else
+                            <span class="text-3xl font-bold text-pink-500">
+                                {{ strtoupper(substr($job->company_name ?? 'J', 0, 1)) }}
+                            </span>
                         @endif
 
                     </div>
 
                     <!-- COMPANY NAME -->
                     <h2 class="text-4xl font-bold text-[#0d0c22] leading-tight mb-5">
-
                         {{ $job->company_name }}
-
                     </h2>
 
-                    <!-- WEBSITE SECTION -->
-               <!-- WEBSITE -->
-@if($job->website)
-    <a
-        href="{{ $job->website }}"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-lg text-gray-700 hover:text-pink-500 transition"
-    >
-        Visit Website
-    </a>
-@endif
+                    <!-- WEBSITE -->
+                    @if($job->website)
+                        <a
+                            href="{{ $job->website }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-lg text-gray-700 hover:text-pink-500 transition"
+                        >
+                            Visit Website
+                        </a>
+                    @endif
 
-<!-- APPLY -->
-<div class="mt-8 mb-12 flex justify-center">
+                    <!-- APPLY -->
+                    <div class="mt-8 mb-12 flex justify-center">
 
-    <a
-        href="{{ $job->apply_url }}"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="w-full flex items-center justify-center h-14 rounded-full bg-[#0d0c22] hover:bg-pink-500 text-white font-semibold text-lg transition"
-    >
-        Apply for this position
-    </a>
+                        @if($job->apply_url)
+                            <a
+                                href="{{ $job->apply_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="w-full flex items-center justify-center h-14 rounded-full bg-[#0d0c22] hover:bg-pink-500 text-white font-semibold text-lg transition"
+                            >
+                                Apply for this position
+                            </a>
+                        @else
+                            <button
+                                type="button"
+                                class="w-full flex items-center justify-center h-14 rounded-full bg-gray-300 text-white font-semibold text-lg cursor-not-allowed"
+                            >
+                                Apply link unavailable
+                            </button>
+                        @endif
 
-</div>
+                    </div>
 
-</div>
+                </div>
 
                 <hr class="my-10 border-gray-200">
 
@@ -163,43 +186,49 @@
                 @auth
                     @if(Auth::id() === $job->poster_id || Auth::user()->role === 'admin')
 
-                    <hr class="my-10 border-gray-200">
+                        <hr class="my-10 border-gray-200">
 
-                    <div>
+                        <div>
 
-                        <h4 class="font-semibold text-gray-900 mb-5 text-lg">
-                            Employer Actions
-                        </h4>
+                            <h4 class="font-semibold text-gray-900 mb-5 text-lg">
+                                Employer Actions
+                            </h4>
 
-                        <div class="flex flex-col gap-3">
+                            <div class="flex flex-col gap-3">
 
-                            <a href="{{ route('jobs.edit', $job) }}"
-                               class="w-full h-12 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium flex items-center justify-center transition">
-                                Edit Job
-                            </a>
+                                @if(Route::has('jobs.edit'))
+                                    <a href="{{ route('jobs.edit', $job) }}"
+                                       class="w-full h-12 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium flex items-center justify-center transition">
+                                        Edit Job
+                                    </a>
+                                @endif
 
-                            <a href="{{ route('jobs.applications', $job) }}"
-                               class="w-full h-12 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium flex items-center justify-center transition">
-                                View {{ $job->applications_count }} Applications
-                            </a>
+                                @if(Route::has('jobs.applications'))
+                                    <a href="{{ route('jobs.applications', $job) }}"
+                                       class="w-full h-12 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium flex items-center justify-center transition">
+                                        View {{ $job->applications_count }} Applications
+                                    </a>
+                                @endif
 
-                            <form action="{{ route('jobs.destroy', $job) }}"
-                                  method="POST"
-                                  onsubmit="return confirm('Delete this job?')">
+                                @if(Route::has('jobs.destroy'))
+                                    <form action="{{ route('jobs.destroy', $job) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Delete this job?')">
 
-                                @csrf
-                                @method('DELETE')
+                                        @csrf
+                                        @method('DELETE')
 
-                                <button type="submit"
-                                        class="w-full h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-medium transition">
-                                    Delete
-                                </button>
+                                        <button type="submit"
+                                                class="w-full h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-medium transition">
+                                            Delete
+                                        </button>
 
-                            </form>
+                                    </form>
+                                @endif
+
+                            </div>
 
                         </div>
-
-                    </div>
 
                     @endif
                 @endauth
@@ -211,4 +240,5 @@
     </div>
 
 </div>
+
 @endsection

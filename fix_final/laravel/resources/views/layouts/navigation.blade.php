@@ -19,6 +19,7 @@
             </a>
         </div>
 
+        @if(!request()->is('profile/*'))
         <div class="flex-1 flex items-center justify-center min-w-0"
              :class="showSearch ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'"
         >
@@ -73,6 +74,7 @@
             </div>
 
         </div>
+        @endif
 
         <div class="flex-none flex items-center gap-2 lg:gap-4">
 
@@ -101,12 +103,14 @@
                                 </svg>
                                 <span class="text-sm font-semibold text-gray-800">Following</span>
                             </a>
+
                             <a href="{{ url('/dashboard/popular') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#f8f7f4] transition-colors group">
                                 <svg class="w-5 h-5 text-gray-600 group-hover:text-[#d83372]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                                 </svg>
                                 <span class="text-sm font-semibold text-gray-800">Popular</span>
                             </a>
+
                             <a href="{{ url('/dashboard/new') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#f8f7f4] transition-colors group">
                                 <svg class="w-5 h-5 text-gray-600 group-hover:text-[#ea4c89]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
@@ -115,29 +119,29 @@
                             </a>
                         </div>
 
-                       <div class="flex-1 min-w-0 px-4">
-    <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
-        
-<a
-    href="{{ route('category', ['name' => 'discover']) }}"
-    class="px-5 py-2 rounded-full text-sm font-semibold transition whitespace-nowrap capitalize bg-[#ea4c89] text-white"
->
-    Discover
-</a>
+                        <div class="flex-1 min-w-0 px-4">
+                            <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+                                
+                                <a
+                                    href="{{ route('category', ['name' => 'discover']) }}"
+                                    class="px-5 py-2 rounded-full text-sm font-semibold transition whitespace-nowrap capitalize bg-[#ea4c89] text-white"
+                                >
+                                    Discover
+                                </a>
 
-        @foreach($categories as $category)
-            @if(strtolower($category->name) !== 'discover') {{-- Agar data discover tidak double kalau ada di DB --}}
-<a
-    href="{{ route('category', ['name' => $category->name]) }}"
-    class="px-5 py-2 rounded-full text-sm font-semibold transition whitespace-nowrap capitalize bg-gray-100 text-gray-700 hover:bg-[#ea4c89] hover:text-white"
->
-    {{ str_replace('-', ' ', $category->name) }}
-</a>
-            @endif
-        @endforeach
+                                @foreach($categories as $category)
+                                    @if(strtolower($category->name) !== 'discover')
+                                        <a
+                                            href="{{ route('category', ['name' => $category->name]) }}"
+                                            class="px-5 py-2 rounded-full text-sm font-semibold transition whitespace-nowrap capitalize bg-gray-100 text-gray-700 hover:bg-[#ea4c89] hover:text-white"
+                                        >
+                                            {{ str_replace('-', ' ', $category->name) }}
+                                        </a>
+                                    @endif
+                                @endforeach
 
-    </div>
-</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -145,20 +149,10 @@
                     Get Hired
                 </a>
 
-                <a href="{{ route('talent.index') }}"
-                    class="text-sm font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">
-                        Post Job
+                <a href="{{ route('jobs.create') }}" class="text-sm font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">
+                    Post Job
                 </a>
 
-            @if(in_array(Auth::user()->role ?? '', ['employer', 'admin']))
-    <a href="{{ route('jobs.create') }}" class="text-sm font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">
-        Hire
-    </a>
-@endif
-                
-                @if(in_array(Auth::user()->role ?? '', ['employer', 'admin']))
-                    <a href="{{ route('jobs.create') }}" class="text-sm font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">Hire</a>
-                @endif
             </div>
 
             @guest
@@ -167,41 +161,45 @@
             @endguest
 
             @auth
-            <div x-data="{ open: false }" class="relative">
-                <button @click="open = !open" class="flex items-center gap-2 focus:outline-none">
-                    <img 
-                        src="{{ Auth::user()->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->full_name).'&background=ea4c89&color=fff' }}" 
-                        alt="{{ Auth::user()->full_name }}"
-                        class="w-9 h-9 rounded-full object-cover border-2 border-transparent hover:border-[#ea4c89] transition-colors"
-                    >
-                </button>
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" class="flex items-center gap-2 focus:outline-none">
+                        <img 
+                            src="{{ Auth::user()->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->full_name).'&background=ea4c89&color=fff' }}" 
+                            alt="{{ Auth::user()->full_name }}"
+                            class="w-9 h-9 rounded-full object-cover border-2 border-transparent hover:border-[#ea4c89] transition-colors"
+                        >
+                    </button>
 
-                <div
-                    x-show="open"
-                    @click.away="open = false"
-                    x-transition
-                    class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-xl py-2 z-50"
-                >
-                    <div class="px-4 py-3 border-b border-gray-100">
-                        <p class="text-sm font-bold text-[#0d0c22] truncate">{{ Auth::user()->full_name }}</p>
-                        <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
+                    <div
+                        x-show="open"
+                        @click.away="open = false"
+                        x-transition
+                        class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-xl py-2 z-50"
+                    >
+                        <div class="px-4 py-3 border-b border-gray-100">
+                            <p class="text-sm font-bold text-[#0d0c22] truncate">{{ Auth::user()->full_name }}</p>
+                            <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
+
+                            @if(in_array(Auth::user()->role, ['employer', 'admin']))
+                                <span class="inline-block mt-1 text-xs px-2 py-0.5 bg-[#ea4c89]/10 text-[#ea4c89] rounded-full font-medium">
+                                    {{ ucfirst(Auth::user()->role) }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <a href="{{ route('user.profile', Auth::user()->username) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">Profile</a>
+                        <a href="{{ route('applications.my') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">My Applications</a>
+
                         @if(in_array(Auth::user()->role, ['employer', 'admin']))
-                            <span class="inline-block mt-1 text-xs px-2 py-0.5 bg-[#ea4c89]/10 text-[#ea4c89] rounded-full font-medium">
-                                {{ ucfirst(Auth::user()->role) }}
-                            </span>
+                            <a href="{{ route('jobs.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">Post a Job</a>
                         @endif
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-[#ea4c89] hover:bg-[#ea4c89]/10">Log Out</button>
+                        </form>
                     </div>
-                    <a href="{{ route('user.profile', Auth::user()->username) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">Profile</a>
-                    <a href="{{ route('applications.my') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">My Applications</a>
-                    @if(in_array(Auth::user()->role, ['employer', 'admin']))
-                        <a href="{{ route('jobs.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f7f4]">Post a Job</a>
-                    @endif
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-[#ea4c89] hover:bg-[#ea4c89]/10">Log Out</button>
-                    </form>
                 </div>
-            </div>
             @endauth
 
             <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2 text-gray-500 hover:text-[#ea4c89] transition-colors">
@@ -221,17 +219,23 @@
     >
         <div class="space-y-3">
             <a href="#" class="block py-2 text-base font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">Explore</a>
-            <a href="{{ route('jobs.index') }}" class="block py-2 text-base font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">Get Hired</a>
-            @if(in_array(Auth::user()->role ?? '', ['employer', 'admin']))
-                <a href="{{ route('jobs.create') }}" class="block py-2 text-base font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">Hire Talent</a>
-            @endif
+
+            <a href="{{ route('jobs.index') }}" class="block py-2 text-base font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">
+                Get Hired
+            </a>
+
+            <a href="{{ route('jobs.create') }}" class="block py-2 text-base font-semibold text-[#0d0c22] hover:text-[#ea4c89] transition-colors">
+                Post Job
+            </a>
             
             @auth
                 <a href="{{ route('user.profile', Auth::user()->username) }}" class="block py-2 text-base text-gray-600 hover:text-[#ea4c89]">Profile</a>
                 <a href="{{ route('applications.my') }}" class="block py-2 text-base text-gray-600 hover:text-[#ea4c89]">My Applications</a>
+
                 @if(in_array(Auth::user()->role, ['employer', 'admin']))
                     <a href="{{ route('jobs.create') }}" class="block py-2 text-base text-gray-600 hover:text-[#ea4c89]">Post a Job</a>
                 @endif
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full text-left py-2 text-base text-[#ea4c89] font-semibold hover:text-[#c73e72]">Log Out</button>
@@ -250,6 +254,11 @@
 <div class="h-16 lg:h-14"></div>
 
 <style>
-    [x-cloak] { display: none !important; }
-    nav.fixed { background-color: white !important; }
+    [x-cloak] { 
+        display: none !important; 
+    }
+
+    nav.fixed { 
+        background-color: white !important; 
+    }
 </style>
