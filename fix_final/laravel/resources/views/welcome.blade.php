@@ -242,25 +242,34 @@
 
                 <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 shrink-0">
 
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        class="w-5 h-5 text-[#ea4c89]">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
+                    <button
+    type="button"
+    onclick="likeShotHome(event, {{ $shot->id }}, this)"
+    class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 hover:bg-gray-100 shrink-0 transition">
 
-                    <span 
-                        id="likes-count-{{ $shot->id }}"
-                        class="text-[#3d3d4e] text-[13px] font-medium"
-                    >
-                        {{ $shot->likes_count }}
-                </span>
+    <svg
+        data-like-icon
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        fill="{{ auth()->check() && $shot->isLikedBy(auth()->user()) ? 'currentColor' : 'none' }}"
+        class="w-5 h-5 text-[#ea4c89] transition-all duration-200">
+
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+    </svg>
+
+    <span
+        id="likes-count-{{ $shot->id }}"
+        data-shot-id="{{ $shot->id }}"
+        class="like-count text-[#3d3d4e] text-[13px] font-medium">
+        {{ $shot->likes_count ?? 0 }}
+    </span>
+
+</button>
 
                 </div>
 
@@ -318,5 +327,49 @@
 </div>
 
 </div> 
+
+<script>
+async function likeShotHome(event, shotId, button) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    try {
+        const response = await fetch(`/shots/${shotId}/like`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (response.status === 401 || response.redirected) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const data = await response.json();
+
+        const icon = button.querySelector('[data-like-icon]');
+
+        if (data.liked) {
+            icon.setAttribute('fill', 'currentColor');
+            icon.classList.add('scale-110');
+        } else {
+            icon.setAttribute('fill', 'none');
+            icon.classList.remove('scale-110');
+        }
+
+        document
+            .querySelectorAll(`.like-count[data-shot-id="${shotId}"]`)
+            .forEach((el) => {
+                el.textContent = data.likes_count;
+            });
+
+    } catch (error) {
+        console.error('Like home error:', error);
+    }
+}
+</script>
 
 @endsection
