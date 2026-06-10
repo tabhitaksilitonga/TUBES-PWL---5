@@ -65,19 +65,20 @@
             </button>
 
             @auth
+            @if(auth()->id() !== $shot->user_id)
             <button
                 type="button"
                 onclick="openGetInTouchModal({{ $shot->id }})"
                 class="bg-[#0d0c22] text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition shadow-lg">
                 Get in touch
             </button>
+            @endif
             @else
             <a href="{{ route('login') }}" class="bg-[#0d0c22] text-white px-6 py-2.5 rounded-full font-semibold hover:bg-gray-800 transition shadow-lg">
                 Get in touch
             </a>
             @endauth
 
-            {{-- Tombol Delete Khusus Pemilik Shots --}}
             @auth
             @if(auth()->id() === $shot->user_id)
             <form action="{{ route('shots.destroy', $shot->id) }}" method="POST" onsubmit="return confirm('Apakah kamu yakin ingin menghapus postingan ini?')">
